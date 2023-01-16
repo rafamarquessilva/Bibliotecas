@@ -1,5 +1,6 @@
 ﻿using bytebank.Modelos.Conta;
 using bytebank_ATENDIMENTO.bytebank.Exceptions;
+using Newtonsoft.Json;
 
 namespace bytebank_ATENDIMENTO.bytebank.Atendimento
 {
@@ -91,7 +92,27 @@ namespace bytebank_ATENDIMENTO.bytebank.Atendimento
                 Console.WriteLine("... Não existe dados para exportação...");
                 Console.ReadKey();
             }
-          
+            else
+            {
+                string json = JsonConvert.SerializeObject(_listaDeContas,
+                    Formatting.Indented);
+                try
+                {
+                    FileStream fs = new FileStream(@"c:\tmp\export\contas.json", 
+                        FileMode.Create);
+                    using (StreamWriter streamwriter = new StreamWriter(fs))
+                    {
+                        streamwriter.WriteLine(json);
+                    }
+                    Console.WriteLine(@"Arquivo salvo em c:\tmp\export\");
+                    Console.ReadKey();
+                }
+                catch (Exception excecao)
+                {
+                    throw new ByteBankException(excecao.Message);
+                    Console.ReadKey();
+                }
+            }
         }
 
         private void EncerrarAplicacao()
